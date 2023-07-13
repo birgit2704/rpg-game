@@ -8,6 +8,8 @@ class Character {
       .fill(0)
       .map(() => `<div class="placeholder-dice"></div>`)
       .join("");
+
+    this.maxHealth = this.health;
   }
 
   getRolledDices() {
@@ -26,12 +28,21 @@ class Character {
     return this.randomNoArray.reduce((sum, el) => sum + el);
   }
 
-  renderCharacter({ name, avatar, health, diceHtml }) {
+  renderCharacter({ name, avatar, health, diceHtml, maxHealth }) {
+    let percent = (health / maxHealth) * 100;
+    console.log(health, maxHealth, percent);
     return `
         <div class="character-card">
           <h4 class="name"> ${name} </h4>
           <img class="avatar" src="${avatar}"/>
           <p class="health">health: <b> ${health} </b></p>
+          <div class="health-bar-outer">
+                    <div class="health-bar-inner ${
+                      percent < 26 ? "danger" : ""
+                    }" 
+                    style="width:${percent}%;">
+                    </div>
+                </div>
           <div class="dice-container">
             ${diceHtml}
           </div>
