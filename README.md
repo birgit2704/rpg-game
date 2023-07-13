@@ -2,7 +2,7 @@
 
 project during the scrimba Frontend Career Path
 
-<img src="" alt="screenshot" width="200px">
+<img src="screenshot.jpg" alt="screenshot" width="200px">
 
 ## About Scrimba
 
