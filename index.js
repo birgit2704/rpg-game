@@ -2,6 +2,22 @@ import characterData from "./data.js";
 import Character from "./Character.js";
 
 const attackBtn = document.getElementById("attack-button");
+const monsterArray = [
+  characterData.orc,
+  characterData.demon,
+  characterData.goblin,
+];
+const wizard = new Character(characterData.hero);
+let monster = new Character(monsterArray.shift());
+
+render();
+
+function render() {
+  document.getElementById("hero").innerHTML = wizard.renderCharacter(wizard);
+  document.getElementById("monster").innerHTML =
+    monster.renderCharacter(monster);
+}
+
 attackBtn.addEventListener("click", attack);
 
 function attack() {
@@ -9,18 +25,7 @@ function attack() {
   takeDamage();
   checkHealth();
   render();
-
-  if (wizard.dead || (monster.dead && monsterArray.length < 1)) {
-    displayEndMessage();
-    attackBtn.disabled = true;
-  } else if (monster.dead && monsterArray.length > 0) {
-    attackBtn.disabled = true;
-    setTimeout(() => {
-      monster = new Character(monsterArray.shift());
-      render();
-      attackBtn.disabled = false;
-    }, 1500);
-  }
+  endGame();
 }
 
 function rollDices() {
@@ -41,6 +46,20 @@ function checkHealth() {
   if (monster.health < 1) {
     monster.dead = true;
     monster.health = 0;
+  }
+}
+
+function endGame() {
+  if (wizard.dead || (monster.dead && monsterArray.length < 1)) {
+    displayEndMessage();
+    attackBtn.disabled = true;
+  } else if (monster.dead && monsterArray.length > 0) {
+    attackBtn.disabled = true;
+    setTimeout(() => {
+      monster = new Character(monsterArray.shift());
+      render();
+      attackBtn.disabled = false;
+    }, 1500);
   }
 }
 
@@ -68,21 +87,4 @@ function displayEndMessage() {
                   </div>
     `);
   }, 1500);
-}
-
-const monsterArray = [
-  characterData.orc,
-  characterData.demon,
-  characterData.goblin,
-];
-
-const wizard = new Character(characterData.hero);
-let monster = new Character(monsterArray.shift());
-
-render();
-
-function render() {
-  document.getElementById("hero").innerHTML = wizard.renderCharacter(wizard);
-  document.getElementById("monster").innerHTML =
-    monster.renderCharacter(monster);
 }
