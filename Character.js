@@ -30,7 +30,6 @@ class Character {
 
   renderCharacter({ name, avatar, health, diceHtml, maxHealth }) {
     let percent = (health / maxHealth) * 100;
-    console.log(health, maxHealth, percent);
     return `
         <div class="character-card">
           <h4 class="name"> ${name} </h4>

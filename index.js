@@ -2,7 +2,6 @@ import characterData from "./data.js";
 import Character from "./Character.js";
 
 const attackBtn = document.getElementById("attack-button");
-
 attackBtn.addEventListener("click", attack);
 
 function attack() {
@@ -10,22 +9,28 @@ function attack() {
   takeDamage();
   checkHealth();
   render();
-  if (wizard.dead || orc.dead) {
-    // && mosterArray.length < 1
+
+  if (wizard.dead || (monster.dead && monsterArray.length < 1)) {
     displayEndMessage();
     attackBtn.disabled = true;
+  } else if (monster.dead && monsterArray.length > 0) {
+    attackBtn.disabled = true;
+    setTimeout(() => {
+      monster = new Character(monsterArray.shift());
+      render();
+      attackBtn.disabled = false;
+    }, 1500);
   }
-  //else next monster
 }
 
 function rollDices() {
   wizard.getRolledDices();
-  orc.getRolledDices();
+  monster.getRolledDices();
 }
 
 function takeDamage() {
-  wizard.health -= orc.getDamage();
-  orc.health -= wizard.getDamage();
+  wizard.health -= monster.getDamage();
+  monster.health -= wizard.getDamage();
 }
 
 function checkHealth() {
@@ -33,9 +38,9 @@ function checkHealth() {
     wizard.dead = true;
     wizard.health = 0;
   }
-  if (orc.health < 1) {
-    orc.dead = true;
-    orc.health = 0;
+  if (monster.health < 1) {
+    monster.dead = true;
+    monster.health = 0;
   }
 }
 
@@ -43,13 +48,13 @@ function displayEndMessage() {
   let message;
   let emoji;
 
-  if (wizard.dead && orc.dead) {
+  if (wizard.dead && monster.dead) {
     message = "both are dead";
     emoji = "👹";
   } else if (wizard.dead) {
     message = "the monster has won";
     emoji = "👹";
-  } else if (orc.dead) {
+  } else if (monster.dead) {
     message = "the wizard has won";
     emoji = "🧙‍♂️";
   }
@@ -65,12 +70,19 @@ function displayEndMessage() {
   }, 1500);
 }
 
+const monsterArray = [
+  characterData.orc,
+  characterData.demon,
+  characterData.goblin,
+];
+
 const wizard = new Character(characterData.hero);
-const orc = new Character(characterData.orc);
+let monster = new Character(monsterArray.shift());
 
 render();
 
 function render() {
   document.getElementById("hero").innerHTML = wizard.renderCharacter(wizard);
-  document.getElementById("monster").innerHTML = wizard.renderCharacter(orc);
+  document.getElementById("monster").innerHTML =
+    monster.renderCharacter(monster);
 }
